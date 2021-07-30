@@ -1,0 +1,745 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head id="Head1" runat="server">
+    <title>Coaching Management System</title>
+
+    <link href="~/Content/css/MIS/onepcssgrid.css" rel="stylesheet" />
+
+    <link href="~/Content/css/MIS/dbzHtmlPagination.css" rel="stylesheet" />
+
+    <link href="~/Content/css/template.css" rel="stylesheet"/>
+
+    <link href="~/Content/css/templateext.css" rel="stylesheet" />
+
+
+    <link href="~/Content/css/mainside.css" rel="stylesheet" />
+
+    <link href="~/Scripts/JQueryEasyUI/themes/icon.css" rel="stylesheet" />
+
+    <link href="~/Scripts/JQueryEasyUI/themes/gray/easyui.css" rel="stylesheet" />
+
+    <script src="~/Scripts/modernizr-1.7.min.js"></script>
+
+    <script src="~/Scripts/JQueryEasyUI/jquery-1.8.0.min.js"></script>
+
+
+    <script src="~/Scripts/JQueryEasyUI/plugins/jquery.pagination.js"></script>
+
+    <script src="~/Scripts/MIS/jquery-ui-1.8.24.min.js"></script>
+
+    <script src="~/Scripts/MIS/jquery.ui.core.js"></script>
+
+    <script src="~/Scripts/MIS/jquery.ui.widget.js"></script>
+
+    <script src="~/Scripts/MIS/jquery.ui.effect.js"></script>
+
+    <script src="~/Scripts/MIS/jquery.ui.button.js"></script>
+
+    <script src="~/Scripts/MIS/jquery.ui.draggable.js"></script>
+
+    <script src="~/Scripts/MIS/jquery.ui.droppable.js"></script>
+
+    <script src="~/Scripts/MIS/jquery.ui.mouse.js"></script>
+
+    <script src="~/Scripts/MIS/jquery.ui.sortable.js"></script>
+
+    <script src="~/Scripts/MIS/dbzMISPortlets.js"></script>
+
+    <script src="~/Scripts/jquery.validate.js"></script>
+
+    <script src="~/Scripts/DevelopersScripts/dbzValidationChecking.js"></script>
+
+    <script src="~/Scripts/DevelopersScripts/dbzCustomizeEasyUIDataGrid.js"></script>
+
+    <script src="~/Scripts/JQueryEasyUI/jquery.easyui.min.js"></script>
+
+    <script>
+
+    //function checkSession() {
+    //    $.ajax({
+    //        url: '/Home/CheckSessionTimeOut',
+    //        type: "POST",
+    //        success: function (result) {
+    //            if (result == "True") {
+    //                window.top.location = "/Account/LogOn";
+    //            }
+    //        },
+    //        complete: function () {
+    //            setupSessionTimeoutCheck();
+    //        }
+    //    });
+    //}
+
+    //function setupSessionTimeoutCheck() {
+    //    //clearTimeout(checkTimeout);
+    //    //checkTimeout = setTimeout(checkSession, 420000);  // 7 minutes
+    //}
+    //var checkTimeout;
+
+    $(document).ready(function() {
+
+        //checkTimeout = setTimeout(checkSession, 420000);  // 7 minutes
+
+        $.ajax({
+            url: '/Home/CheckSessionTimeOut',
+            type: "POST",
+            success: function(result) {
+                if (result == "True") {
+                    window.top.location = "/Account/Login";
+                }
+            },
+            complete: function() {
+                // setupSessionTimeoutCheck();
+            }
+        });
+        $('#cc').layout('collapse', 'east');
+
+        addTab('Home', '/Home/Welcome');
+
+
+    });
+    $(function() {
+        $('#tt').layout('collapse', 'east');
+    });
+
+    function addTab(title, url) {
+        if ($('#tt').tabs('exists', title)) {
+            $('#tt').tabs('select', title);
+        } else {
+            var content = '<iframe class="ifarms" frameborder="0"  src="' + url + '" style="width:100%;height:99%;"></iframe>';
+            $('#tt').tabs('add', {
+                title: title,
+                content: content,
+                closable: true
+            });
+        }
+        $(".ifarms").parent().css("width", "100%");
+        $(".ifarms").parent().css("height", "506px");
+        $("div.panel-body panel-body-noheader panel-body-noborder").css("width", "100%");
+        $("div.panel-body panel-body-noheader panel-body-noborder").css("height", "506px");
+    }
+
+    function LogOut() {
+        $.ajax({
+            url: '/Account/LogOff',
+            type: 'post',
+            success: function(result) {
+                window.location = "/Account/LogIn";
+            }
+        });
+    }
+
+    window.EditStudent = function(value) {
+        var title = "Student";
+        if ($('#tt').tabs('exists', title)) {
+            $('#tt').tabs('select', title);
+        } else {
+            var content = '<iframe class="ifarms" id="formStudent" frameborder="0"  src="/Student/Create?Id=' + value + '" style="width:100%;height:99%;"></iframe>';
+            $('#tt').tabs('add', {
+                title: title,
+                content: content,
+                closable: true
+            });
+        }
+        $(".ifarms").parent().css("width", "100%");
+        $(".ifarms").parent().css("height", "506px");
+        $("div.panel-body panel-body-noheader panel-body-noborder").css("width", "100%");
+        $("div.panel-body panel-body-noheader panel-body-noborder").css("height", "506px");
+        //$('#formStudent').load(function () {
+        //    $("#formStudent").contents().find("#hdfStudentId").val(value);
+        //});
+
+
+    };
+
+</script>
+
+    <style type="text/css">
+        .col1, .col2, .col3, .col4, .col5, .col6, .col7, .col8, .col9, .col10, .col11, .col12 {
+            @*background: none repeat scroll 0 0 #801255;
+            *@ margin-bottom: 5px;
+            padding: 2px 0;
+        }
+
+        .col7 {
+            width: 56.5%;
+        }
+
+        .contentDetails {
+            padding-left: 2%;
+            padding-top: 1%;
+        }
+
+            .contentDetails .divLeftPanel {
+                text-align: left;
+                float: left;
+                width: 31%;
+            }
+
+            .contentDetails .divRightPanel {
+                float: left;
+                width: 60%;
+            }
+
+        .divLeftPanel {
+        }
+
+        .ui-datepicker-trigger {
+            background-image: url("../../Scripts/JQueryEasyUI/themes/gray/images/datebox_arrow.png" );
+            background-repeat: no-repeat;
+            border: none;
+            width: 16px;
+            height: 16px;
+        }
+
+        .custom-buttons {
+            background-color: #E0E0E0;
+            background: -webkit-linear-gradient(top,#E0E0E0 0,#EFEFEF 100%);
+            background: -moz-linear-gradient(top,#E0E0E0 0,#EFEFEF 100%);
+            background: -o-linear-gradient(top,#E0E0E0 0,#EFEFEF 100%);
+            background: linear-gradient(to bottom,#E0E0E0 0,#EFEFEF 100%);
+            background-repeat: repeat-x;
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#EFF5FF,endColorstr=#E0ECFF,GradientType=0);
+            border-color: #BBBBBB;
+            padding: 0px;
+            position: relative;
+            border-width: 1px;
+            border-style: solid;
+            min-width: 75px;
+        }
+
+
+            .custom-buttons:hover {
+                background-color: #999999;
+                background: -webkit-linear-gradient(top,#999999 0,#ABABAB 100%);
+                background: -moz-linear-gradient(top,#999999 0,#ABABAB 100%);
+                background: -o-linear-gradient(top,#999999 0,#ABABAB 100%);
+                background: linear-gradient(to bottom,#999999 0,#ABABAB 100%);
+                background-repeat: repeat-x;
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#999999,endColorstr=#ABABAB,GradientType=0);
+                border-color: #BBBBBB;
+                padding: 0px;
+                position: relative;
+                border-width: 1px;
+                border-style: solid;
+                min-width: 75px;
+                color: #FFFFFF;
+            }
+
+        .leftLevelDiv {
+            width: 100%;
+        }
+
+        .colleft {
+            padding: 2px;
+            width: 25%;
+            float: left;
+        }
+
+        .colleftlast {
+            padding: 2px;
+            width: 60%;
+        }
+
+        .colleftlasttd {
+            padding: 2px;
+            width: 100%;
+        }
+        .panel-body {
+            width: 100%;
+        }
+    </style>
+    </head>
+
+<body style="background-color: #EFEFEF;">
+<div style="height: 75px;">
+    <p style="float: left;">
+
+    </p>
+    <div id="imgId" style="float: left; height: 60px; width: 15%;">
+        <img src="~/Content/Logo/OptimumLogo.PNG" width="120%" height="70px" />
+    </div>
+    <div style="float: right; height: 60px; width: 82%;">
+        <div style="float: left; width: 66%">
+            <div style="float: left; width: 40%">
+                <div style="height: 75px; width: 100%; margin: 6px; margin-left: 50px;">
+                    <div style="width: 100%">
+                        <label id="Welcome" style="width: 50%; font-size: smaller;">
+                        </label>
+                        <label id="UserName" style="width: 50%; font-size: smaller;">
+                        </label>
+                    </div>
+                    <div style="width: 100%">
+                        <label id="LocationLabel" style="width: 25%; font-size: smaller;">
+                        </label>
+                        <label id="Location" style="width: 75%; font-size: smaller;">
+                        </label>
+                    </div>
+                    <div style="width: 100%">
+                        <label id="CompanyLabel" style="width: 25%; font-size: smaller;">
+                        </label>
+                        <label id="CompanyName" style="width: 75%; font-size: smaller;">
+                        </label>
+                    </div>
+                    <div style="width: 100%">
+                        <label id="AddressLabel" style="width: 25%; font-size: smaller;">
+                        </label>
+                        <label id="Address" style="width: 75%; font-size: smaller;">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div style="width: 60%; float: right">
+                <div style="float: left">
+
+                </div>
+                <div style="height: 33px; width: 31px; margin: 6px; margin-left: 50px;">
+                </div>
+            </div>
+        </div>
+        <div style="float: right; width: 25%">
+            <table style="float: right">
+                <tbody>
+                <tr style="float: right">
+                    <td style="padding: 0px;">
+                        <img style="height: 31px; width: 43px; padding-bottom: 2px;" src="../../Content/images/up_panal1.png">
+                    </td>
+                    <td style="padding: 0px">
+                        <img style="height: 33px; width: 69px;" src="../../Content/images/up_panal2.jpg">
+                    </td>
+                    <td style="padding: 0px">
+                        <img style="height: 33px; width: 69px;" src="../../Content/images/up_panal3.jpg">
+                    </td>
+                    <td style="padding: 0px">
+                        <img onclick="LogOut();" style="height: 33px; width: 69px; cursor: pointer;" src="../../Content/images/up_panal1.jpg">
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="cc" class="easyui-layout" style="width: 100%; height: 600px;">
+    <div data-options="region:'west',iconCls:'icon-search', title:'Menu',split:true" style="width: 245px;">
+        <div class="easyui-accordion" style="width: auto; height: 520px;">
+            <div title="Setup" data-options="iconCls:'icon-search'" style="padding: 10px;">
+                @*<a href="#" class="easyui-linkbutton" onclick="addTab('google','http://www.google.com')">google</a>
+                    <a href="#" class="easyui-linkbutton" onclick="addTab('jquery','http://jquery.com/')">jquery</a>
+                    <a href="#" class="easyui-linkbutton" onclick="addTab('easyui','http://jeasyui.com/')">easyui</a>*@
+                <ul class="easyui-tree">
+                    <li>
+                        <span>Basic Information</span>
+                        <ul>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Session', '/CoachingSession/Index')">
+                                    Session
+                                </label>
+
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Batch', '/Batch/Index')">
+                                    Batch
+                                </label>
+
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Exam', '/Examination/Index')">
+                                    Exam
+                                </label>
+
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Department', '/Department/Index')">
+                                    Department
+                                </label>
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Institute', '/Institute/Index')">
+                                    Institute
+                                </label>
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Division', '')">
+                                    Division
+                                </label>
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('District', '')">
+                                    District
+                                </label>
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Subject Unit', '')">
+                                    Subject Unit
+                                </label>
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Routine', '')">
+                                    Routine
+                                </label>
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Guide', '/Guide/Index')">
+                                    Guide
+                                </label>
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Campus', '')">
+                                    Campus
+                                </label>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span>Subject Setup</span>
+                        <ul>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Subject', '/Subject/Index')">
+                                    Subject
+                                </label>
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Subject', '/Subject/Index')">
+                                    Unit Of Subject
+                                </label>
+
+                            </li>
+
+                        </ul>
+                    </li>
+                    <li>
+                        <span>Account Setup</span>
+                        <ul>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Account Group', '/AccountGroup/Index')">
+                                    Account Group
+                                </label>
+                              
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Account Sub Group', '/AccountSubGroup/Index')">
+                                    Account Sub Group
+                                </label>
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Account Control', '/AccountControl/Index')">
+                                    Account Control
+                                </label>
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Account Subsidiary', '/AccountSubsidiary/Index')">
+                                    Account Subsidiary
+                                </label>
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Account Head', '/AccountHead/Index')">
+                                    Account Head
+                                </label>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div title="Registration" data-options="iconCls:'icon-search'" style="padding: 10px;">
+                <ul class="easyui-tree">
+                    <li>
+                        <span>Registration</span>
+                        <ul>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Students', '/Student/Index')">
+                                    Student
+                                </label>
+                                @*"javascript:onShowMenuTab('Welcome', '/Home/Welcome');"*@
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Teachers', '/Teacher/Index')">
+                                    Teacher
+                                </label>
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('User', '/User/Index')">
+                                    Security User
+                                </label>
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Password', '/User/ChangePassword')">
+                                    Change Password
+                                </label>
+                            </li>
+
+                        </ul>
+                    </li>
+                    <li>
+                        <span>Party Registration</span>
+                        <ul>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Party', '/Party/Index')">
+                                    Party
+                                </label>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div title="Fee Management" data-options="iconCls:'icon-search'" style="padding: 10px;">
+               <ul class="easyui-tree">
+                   <li>
+                       <span>Fee Managment System</span>
+                       <ul>
+                           <li>
+                               <label style="cursor: pointer;" onclick="addTab('Fee Collection', '/StudentFee/FeeCollection')">
+                                   Fee Collection
+                               </label>
+
+                           </li>
+                       </ul>
+                   </li>
+               </ul>
+            </div>
+            <div title="SMS System" data-options="iconCls:'icon-search'" style="padding: 10px;">
+                <ul class="easyui-tree">
+                    <li>
+                        <span>Send SMS</span>
+                        <ul>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('SMS', '/SMS/SendSms')">
+                                    SMS
+                                </label>
+
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Customize SMS', '/SMS/CustomSms')">
+                                    Customize SMS
+                                </label>
+
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Upload Contact No', '/SMS/UploadContact')">
+                                    Upload Contact
+                                </label>
+
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        <div title="Accounting" data-options="iconCls:'icon-search'" style="padding: 10px;">
+            <ul class="easyui-tree">
+                <li>
+                    <span>Accounting</span>
+                    <ul>
+                        @*<li>
+                                <label style="cursor: pointer;" onclick="addTab('Expense Voucher', '/Voucher/DailyCost')">
+                                    Expense Voucher
+                                </label>
+                            </li>*@
+                        <li>
+                            <label style="cursor: pointer;" onclick="addTab('Revenue', '/Voucher/RevenueVoucherIndex')">
+                                Revenue
+                            </label>
+                        </li>
+
+                        <li>
+                            <label style="cursor: pointer;" onclick="addTab('Expense', '/Voucher/ExpenseVoucherIndex')">
+                                Expense
+                            </label>
+                        </li>
+                        <li>
+                            <label style="cursor: pointer;" onclick="addTab('Payment Voucher', '/Voucher/PaymentVoucherIndex')">
+                                Loan Disverse
+                            </label>
+                        </li>
+                        <li>
+                            <label style="cursor: pointer;" onclick="addTab('Payment Return', '/Voucher/PaymentReturnVoucher')">
+                                Loan Disverse Return
+                            </label>
+                        </li>
+                        <li>
+                            <label style="cursor: pointer;" onclick="addTab('Receive Voucher', '/Voucher/ReceiveVoucherIndex')">
+                                Loan Receive
+                            </label>
+                        </li>
+                        <li>
+                            <label style="cursor: pointer;" onclick="addTab('Receive Return', '/Voucher/ReceiveReturnVoucher')">
+                                Loan Receive Return
+                            </label>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div title="Guide" data-options="iconCls:'icon-search'" style="padding: 10px;">
+            <ul class="easyui-tree">
+                <li>
+                    <span>Guide</span>
+                    <ul>
+                        <li>
+                            <label style="cursor: pointer;" onclick="addTab('Guide Stock ', '/Guide/GuideStock')">
+                                Stock
+                            </label>
+                        </li>
+                        <li>
+                            <label style="cursor: pointer;" onclick="addTab('Guide Sales ', '/Guide/GuideSales')">
+                                Guide Sales
+                            </label>
+                        </li>
+
+                        @*<li>
+                        <label style="cursor: pointer;" onclick="addTab('Student Fee', '/Approval/Index')">
+                            Student Fee
+                        </label>
+
+                    </li>*@
+                    </ul>
+                </li>
+            </ul>
+        </div>
+            <div title="Approval System" data-options="iconCls:'icon-search'" style="padding: 10px;">
+                <ul class="easyui-tree">
+                    <li>
+                        <span>Approval</span>
+                        <ul>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Voucher Approval', '/Approval/Index')">
+                                    Voucher
+                                </label>
+                            </li>
+                            @*<li>
+                                <label style="cursor: pointer;" onclick="addTab('Student Fee', '/Approval/Index')">
+                                    Student Fee
+                                </label>
+
+                            </li>*@
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div title="Reporting" data-options="iconCls:'icon-search'" style="padding: 10px;">
+                <ul class="easyui-tree">
+                    <li>
+                        <span>Reporting</span>
+                        <ul>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Id Card', '/CoachingReport/StudentIdCard')">
+                                    Id Card
+                                </label>
+
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Fee Collection Report', '/CoachingReport/DailyCollectionReport')">
+                                    Fee Collection Report
+                                </label>
+
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Revenue Report', '/CoachingReport/RevenueReport')">
+                                    Revenue Report
+                                </label>
+
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Expense Report', '/CoachingReport/ExpenseReport')">
+                                    Expense Report
+                                </label>
+
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Accounts Report', '/CoachingReport/AccountsReport')">
+                                    Accounts Report
+                                </label>
+
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Individual Report', '/CoachingReport/IndividualReport')">
+                                    Individual Report
+                                </label>
+
+                            </li>
+                            <li>
+                                <label style="cursor: pointer;" onclick="addTab('Student List', '/CoachingReport/StudentListReport')">
+                                    Student List Report
+                                </label>
+
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div data-options="region:'center',iconCls:'icon-reload'" style="padding: 5px; width: auto; background: #eee;">
+        <div data-options="region:'center',iconCls:'icon-tip'" title="Main Title" style="overflow: visible; width: auto;">
+
+            <div id="tt" class="easyui-tabs" style="width: auto; height: 535px;">
+
+            </div>
+        </div>
+    </div>
+    <div data-options="region:'east',iconCls:'icon-help',title:'Others',split:true" style="width: 245px; display: block">
+        <div style="width: 83%; height: 14%; outline: 1px; outline-color: grey; padding-top: 4%;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              padding-left: 5%; padding-right: 5%">
+            <div style="width: 100%; height: 36%; background-color: #9A9A9A; text-emphasis-color: white;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       padding-left: 5%; padding-right: 5%">
+                <div style="color: whitesmoke; padding-top: 3%">
+                    Search
+                </div>
+            </div>
+            <div style="width: 110%; height: auto; padding-top: 5%; padding-left: 0%;">
+                <input id="SearchBox" type="text" style="width: 69%; height: 18px; padding-left: 10%;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      float: left; outline: 1px;"/>
+                <input id="btnSearch" type="button" style="width: 5%; height: 5%; padding-right: 10%;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         float: right; color: #DCDCDC; text-emphasis-color: blue;" value="Go" onclick="Seach();"/>
+            </div>
+        </div>
+        <div style="width: 83%; height: 26%; outline: 1px; outline-color: grey; padding-top: 3%;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          padding-left: 5%; padding-right: 5%">
+            <div style="width: 100%; height: 20%; background-color: #9A9A9A; text-emphasis-color: white;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      padding-left: 5%; padding-right: 5%">
+                <div style="color: whitesmoke; padding-top: 3%">
+                    Bullet Input
+                </div>
+            </div>
+            <div style="width: 100%; height: auto; padding-top: 5%; padding-left: 5%;">
+            </div>
+        </div>
+        <div style="width: 83%; height: 42%; outline: 1px; outline-color: grey; padding-top: 10%;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     padding-left: 5%; padding-right: 5%">
+            <div style="width: 100%; height: 12%; background-color: #9A9A9A; text-emphasis-color: white;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 padding-left: 5%; padding-right: 5%">
+                <div style="color: whitesmoke; padding-top: 3%">
+                    To Do List
+                </div>
+            </div>
+            <div style="width: 100%; height: 41%; padding-top: 5%; padding-left: 5%;">
+                <div id="dvTodoList" style="width: 100%; height: 53px;">
+                    <div id="TodoList" style="width: 100%">
+                    </div>
+
+                </div>
+                <div id="c">
+                    <div id="Calender" class="easyui-calendar" style="width: 160px; height: 180px;" data-options="
+									fit:true,
+									border:true,
+									weeks:['S','S','M','T','W','T','F',],
+									pagination:false,
+									pageSize:10">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-options="region:'south',split:true" style="height: 50px; background-color: #EFEFEF; text-align:center;">
+        @*<a href="www.braintechsoftware.com"> www.braintechsoftware.com</a>*@
+    </div>
+</div>
+</body>
+
+</html>
