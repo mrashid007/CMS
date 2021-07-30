@@ -1,0 +1,20 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Upload Contact</title>
+</head>
+<body>
+@using (Html.BeginForm("Upload", "SMS", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <input type="file" name="FileUpload" />
+    <input type="submit" name="Submit" id="Submit" value="Upload" />
+}
+</body>
+</html>
